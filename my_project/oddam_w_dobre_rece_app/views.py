@@ -1,13 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import RegisterForm
-
-
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
 
 
 def login_view(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Sprawdzamy, czy użytkownik istnieje na podstawie adresu e-mail
+        if not User.objects.filter(email=email).exists():
+            return redirect('register')
+
+        # Uwierzytelnianie użytkownika
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            # Jeśli uwierzytelnianie się powiedzie
+            login(request, user)
+            return redirect('landing_page')  # Przekierowanie na stronę główną
+        else:
+            # Jeśli uwierzytelnianie się nie powiedzie
+            return render(request, 'login.html', {'error': 'Błędny login lub hasło'})
+    else:
         return render(request, 'login.html')
+
+
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect('landing_page')
 
 
 def register_view(request):
