@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from .forms import RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-
+from .models import Institution, Category
 
 def login_view(request):
     if request.method == 'POST':
@@ -59,7 +59,16 @@ def add_donation_view(request):
     if request.method == 'GET':
         return render(request, 'form.html')
 
+
 def landing_page_view(request):
-    if request.method == 'GET':
-        return render(request, 'index.html')
+    institutions_fundacja = Institution.objects.filter(type=Institution.FOUNDATION)
+    institutions_ngo = Institution.objects.filter(type=Institution.NGO)
+    institutions_local = Institution.objects.filter(type=Institution.LOCAL_COLLECTION)
+
+    return render(request, 'index.html', {
+        'institutions_fundacja': institutions_fundacja,
+        'institutions_ngo': institutions_ngo,
+        'institutions_local': institutions_local,
+    })
+
 # Create your views here.
