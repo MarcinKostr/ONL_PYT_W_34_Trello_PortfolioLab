@@ -3,7 +3,10 @@ from django.contrib.auth.models import User
 from .forms import RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from .models import Institution, Category
+from .models import Institution, Category, Donation
+from django.db.models import Sum
+
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -61,6 +64,10 @@ def add_donation_view(request):
 
 
 def landing_page_view(request):
+    total_bags = Donation.objects.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+    supported_institutions = Donation.objects.values('institution').distinct().count()
+
     institutions_fundacja = Institution.objects.filter(type=Institution.FOUNDATION)
     institutions_ngo = Institution.objects.filter(type=Institution.NGO)
     institutions_local = Institution.objects.filter(type=Institution.LOCAL_COLLECTION)
@@ -69,6 +76,7 @@ def landing_page_view(request):
         'institutions_fundacja': institutions_fundacja,
         'institutions_ngo': institutions_ngo,
         'institutions_local': institutions_local,
+        'total_bags': total_bags,
+        'supported_institutions': supported_institutions,
     })
 
-# Create your views here.
