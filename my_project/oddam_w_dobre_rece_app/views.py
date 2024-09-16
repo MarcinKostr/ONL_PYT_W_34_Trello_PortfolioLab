@@ -32,9 +32,9 @@ def login_view(request):
 
 
 
-# def logout_view(request):
-#     logout(request)
-#     return redirect('landing_page')
+def logout_view(request):
+    logout(request)
+    return redirect('landing_page')
 
 
 def register_view(request):

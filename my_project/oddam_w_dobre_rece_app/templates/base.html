@@ -8,38 +8,34 @@
     <title>{% block title %}Document{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
-<!--  <body>-->
-<!--      <header class="header&#45;&#45;main-page">-->
-<!--      <nav class="container container&#45;&#45;70">-->
-<!--        &lt;!&ndash;-ul class="nav&#45;&#45;actions">-->
-<!--          <li class="logged-user">-->
-<!--            Witaj Agata-->
-<!--            <ul class="dropdown">-->
-<!--              <li><a href="#">Profil</a></li>-->
-<!--              <li><a href="#">Ustawienia</a></li>-->
-<!--              <li><a href="#">Wyloguj</a></li>-->
-<!--            </ul>-->
-<!--          </li>-->
-<!--        </ul>&ndash;&gt;-->
-<!--        <ul class="nav&#45;&#45;actions">-->
-<!--          <li><a href="" class="btn btn&#45;&#45;small btn&#45;&#45;without-border">Zaloguj</a></li>-->
-<!--          <li><a href="#" class="btn btn&#45;&#45;small btn&#45;&#45;highlighted">Załóż konto</a></li>-->
-<!--        </ul>-->
 
-<!--        <ul>-->
-<!--          <li><a href="index.html" class="btn btn&#45;&#45;without-border active">Start</a></li>-->
-<!--          <li><a href="index.html#steps" class="btn btn&#45;&#45;without-border">O co chodzi?</a></li>-->
-<!--          <li><a href="index.html#about-us" class="btn btn&#45;&#45;without-border">O nas</a></li>-->
-<!--          <li><a href="index.html#help" class="btn btn&#45;&#45;without-border">Fundacje i organizacje</a></li>-->
-<!--          <li><a href="form.html" class="btn btn&#45;&#45;without-border">Przekaż dary</a></li>-->
-<!--          <li><a href="index.html#contact" class="btn btn&#45;&#45;without-border">Kontakt</a></li>-->
-<!--        </ul>-->
-<!--      </nav>-->
-<!--    </header>-->
+  <body>
+    <header>
+      <nav class="container container--70">
+        <ul class="nav--actions">
+          <!-- Dla zalogowanego użytkownika -->
+          {% if user.is_authenticated %}
+<!-- Dla zalogowanego użytkownika, fragment który trzeba zmodyfikować jeśli starczy czasu -->
+              Witaj {{ user.first_name }}
+
+
+
+                <li><a href="#">Profil</a></li>
+                <li><a href="#">Ustawienia</a></li>
+                <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <!-- Dla niezalogowanego użytkownika -->
+            <li><a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
+            <li><a href="{% url 'register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
 
     <main>
       {% block content %}
-
 
       {% endblock %}
     </main>
@@ -69,5 +65,6 @@
         </div>
       </div>
     </footer>
+    <script src="{% static 'js/scripts.js' %}"></script>
   </body>
 </html>
