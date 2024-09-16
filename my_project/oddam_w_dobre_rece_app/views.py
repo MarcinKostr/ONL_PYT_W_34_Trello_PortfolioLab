@@ -61,8 +61,9 @@ def register_view(request):
 
 @login_required
 def user_profile_view(request):
-    user = request.user
-    return render(request, 'user_profile.html', {'user': user})
+    # Pobieramy wszystkie darowizny przypisane do zalogowanego użytkownika
+    donations = Donation.objects.filter(user=request.user)
+    return render(request, 'user_profile.html', {'user': request.user, 'donations': donations})
 
 
 def add_donation_view(request):
