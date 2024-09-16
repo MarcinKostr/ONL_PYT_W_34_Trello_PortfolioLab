@@ -5,5 +5,5 @@ from .models import Institution
 
 @admin.register(Institution)
 class InstitutionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'description')  # Ustawiamy kolumny, które mają być widoczne w panelu
-    search_fields = ('name', 'type')  # Dodajemy możliwość wyszukiwania po nazwie i typie instytucji
+    list_display = ('name', 'type', 'description')
+    search_fields = ('name', 'type')

@@ -19,6 +19,7 @@ from django.urls import path
 
 from oddam_w_dobre_rece_app.views import (login_view,
                                           logout_view,
+                                          user_profile_view,
                                           register_view,
                                           add_donation_view,
                                           landing_page_view)
@@ -28,6 +29,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/', register_view, name='register'),
+    path('profile/', user_profile_view, name='user_profile'),
     path('add_donation/', add_donation_view, name='add_donation'),
     path('', landing_page_view, name='landing_page'),
 
