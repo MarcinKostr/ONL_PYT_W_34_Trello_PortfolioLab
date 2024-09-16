@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .models import Institution, Category, Donation
 from django.db.models import Sum
-
+from django.contrib.auth.decorators import login_required
 
 
 def login_view(request):
@@ -56,6 +56,13 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, 'register.html', {'form': form})
+
+
+
+@login_required
+def user_profile_view(request):
+    user = request.user
+    return render(request, 'user_profile.html', {'user': user})
 
 
 def add_donation_view(request):
