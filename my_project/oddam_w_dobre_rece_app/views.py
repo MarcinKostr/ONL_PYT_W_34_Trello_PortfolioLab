@@ -68,7 +68,8 @@ def user_profile_view(request):
 
 def add_donation_view(request):
     if request.method == 'GET':
-        return render(request, 'form.html')
+        categories = Category.objects.all()
+        return render(request, 'form.html', {'categories': categories})
 
 
 def landing_page_view(request):
