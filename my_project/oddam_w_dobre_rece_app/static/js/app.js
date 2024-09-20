@@ -218,21 +218,40 @@ document.addEventListener("DOMContentLoaded", function() {
      * Update form front-end
      * Show next or previous section etc.
      */
-    updateForm() {
-      this.$step.innerText = this.currentStep;
+updateForm() {
+    this.$step.innerText = this.currentStep;
 
-      // TODO: Validation
+    // TODO: Validation
 
-      this.slides.forEach(slide => {
+    // Filtrowanie organizacji na podstawie wybranych kategorii w kroku 3
+    if (this.currentStep === 3) {
+
+        const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked')).map(el => el.value);
+       console.log(selectedCategories)
+        const organizations = document.querySelectorAll('.organization');
+        console.log(organizations)
+        organizations.forEach(organization => {
+            //const orgCategories = organization.dataset.categories.split(',');
+
+
+            //const isVisible = selectedCategories.some(category => orgCategories.includes(category));
+
+
+            //organization.style.display = isVisible ? 'block' : 'none';
+        });
+    }
+
+    this.slides.forEach(slide => {
         slide.classList.remove("active");
 
         if (slide.dataset.step == this.currentStep) {
-          slide.classList.add("active");
+            slide.classList.add("active");
         }
-      });
+    });
 
-      this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
-      this.$step.parentElement.hidden = this.currentStep >= 6;
+    this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
+    this.$step.parentElement.hidden = this.currentStep >= 6;
+
 
       // TODO: get data from inputs and show them in summary
     }

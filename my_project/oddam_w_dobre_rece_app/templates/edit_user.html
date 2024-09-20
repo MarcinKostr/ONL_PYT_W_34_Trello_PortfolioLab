@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ustawienia konta</title>
+
+</head>
+<body>
+    <h2>Ustawienia konta</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Edytuj swoje dane</legend>
+            {{ user_form.as_p }}
+            <button type="submit" name="save_user">Zapisz zmiany</button>
+        </fieldset>
+    </form>
+
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Zmień hasło</legend>
+            {{ password_form.as_p }}
+            <button type="submit" name="change_password">Zmień hasło</button>
+        </fieldset>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

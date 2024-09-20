@@ -26,3 +26,22 @@ class RegisterForm(forms.Form):
         if User.objects.filter(email=email).exists():
             raise ValidationError("Ten email jest już zajęty.")
         return email
+
+
+
+class EditUserForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        label='Obecne hasło',
+        required=True,
+        help_text='Wprowadź swoje obecne hasło, aby potwierdzić zmiany.'
+    )
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
+            'email': 'Email'
+        }
