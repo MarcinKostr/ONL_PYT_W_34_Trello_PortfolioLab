@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .forms import RegisterForm
-from django.contrib.auth import authenticate, login, logout
+from .forms import RegisterForm, EditUserForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
 from .models import Institution, Category, Donation
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 
 def login_view(request):
@@ -13,19 +16,19 @@ def login_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # Sprawdzamy, czy użytkownik istnieje na podstawie adresu e-mail
+
         if not User.objects.filter(email=email).exists():
             return redirect('register')
 
-        # Uwierzytelnianie użytkownika
+
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            # Jeśli uwierzytelnianie się powiedzie
+
             login(request, user)
-            return redirect('landing_page')  # Przekierowanie na stronę główną
+            return redirect('landing_page')
         else:
-            # Jeśli uwierzytelnianie się nie powiedzie
+
             return render(request, 'login.html', {'error': 'Błędny login lub hasło'})
     else:
         return render(request, 'login.html')
@@ -41,7 +44,7 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            # Tworzymy nowego użytkownika
+
             user = User.objects.create(
                 username=form.cleaned_data['email'],  # email jako username
                 first_name=form.cleaned_data['name'],
@@ -67,9 +70,45 @@ def user_profile_view(request):
 
 
 def add_donation_view(request):
-    if request.method == 'GET':
-        categories = Category.objects.all()
-        return render(request, 'form.html', {'categories': categories})
+    categories = Category.objects.all()
+    institutions = Institution.objects.all()
+    context = {
+        'categories': categories,
+        'institutions': institutions,
+    }
+    return render(request, 'form.html', context)
+
+
+@login_required
+def edit_user_view(request):
+    user = request.user
+    user_form = EditUserForm(instance=user)
+    password_form = PasswordChangeForm(user)
+
+    if request.method == 'POST':
+        if 'save_user' in request.POST:
+            user_form = EditUserForm(request.POST, instance=user)
+            if user_form.is_valid():
+                if user.check_password(request.POST.get('password')):
+                    user_form.save()
+                    messages.success(request, 'Dane zostały zaktualizowane pomyślnie.')
+                    return redirect('landing_page')
+                else:
+                    user_form.add_error('password', 'Niepoprawne hasło')
+                return redirect('edit_user')
+
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)
+                messages.success(request, 'Hasło zostało zmienione pomyślnie.')
+                return redirect('landing_page')
+
+    return render(request, 'edit_user.html', {
+        'user_form': user_form,
+        'password_form': password_form
+    })
 
 
 def landing_page_view(request):
